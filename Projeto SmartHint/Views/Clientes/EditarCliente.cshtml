@@ -1,0 +1,176 @@
+﻿@model ClientesModel;
+
+@{
+    ViewData["Title"] = "Editar";
+}
+
+<link href="~/css/pages/Clientes.css" rel="stylesheet" />
+
+<div class="info">
+    <div class="box-title">
+        <h1>Editar o Cliente</h1>
+    </div>
+    <div class="box-button">
+        <a asp-action="Index" asp-controller="Home" class="btn btn-secondary" onclick="">Voltar</a>
+    </div>
+</div>
+
+<form asp-action="Editar" asp-controller="Clientes" method="post" class="formulario">
+    <div class="w-100 mt-2 mb-4">
+        <h5 class="text-black p-0 m-0">Infomações do Cliente</h5>
+        <hr class="text-black-50 p-0 m-0" />
+    </div>
+
+    <input type="hidden" name="Id" value="@Model.Id"/>
+
+    <div class="mb-2">
+        <label for="nomeRazaoSocial" class="form-label">Nome/Razão Social:</label>
+        <input type="text" class="form-control" id="nomeRazaoSocial" name="NomeRazaoSocial" data-bs-toggle="tooltip" title="Nome completo ou Razão Social do Cliente." value="@Model.NomeRazaoSocial" required>
+    </div>
+
+    <div class="mb-2">
+        <label for="email" class="form-label">E-mail:</label>
+        <input type="email" class="form-control" id="email" name="Email" data-bs-toggle="tooltip" title="E-mail do Cliente." value="@Model.Email" required>
+    </div>
+
+    <div class="mb-2">
+        <label for="telefone" class="form-label">Telefone:</label>
+        <input type="tel" class="form-control" id="telefone" name="Telefone" data-bs-toggle="tooltip" title="Telefone do Cliente." value="@Model.Telefone" required>
+    </div>
+
+    <div class="mb-2">
+        <label for="dataCadastro" class="form-label">Data de Cadastro:</label>
+        <input type="date" class="form-control" id="dataCadastro" name="DataCadastro" data-bs-toggle="tooltip" title="Selecione o tipo de Pessoa." value="@Model.DataCadastro.ToString("yyyy-MM-dd")" required readonly>
+    </div>
+
+    <div class="w-100 mt-2 mb-4">
+        <h5 class="text-black p-0 m-0">Infomações Pessoais</h5>
+        <hr class="text-black-50 p-0 m-0" />
+    </div>
+
+    <div class="mb-2">
+        <label for="tipo" class="form-label">Tipo de Pessoa:</label>
+        <select class="form-select" id="tipo" name="Tipo" data-bs-toggle="tooltip" title="Selecione o tipo de Pessoa." required>
+            <option value="1">Pessoa Física</option>
+            <option value="0">Pessoa Jurídica</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="cpfCnpj" class="form-label">CPF:</label>
+        <input type="text" class="form-control mb-2" id="cpfCnpj" name="CpfCnpj" data-bs-toggle="tooltip" title="Insira o CPF ou o CNPJ do Cliente." value="@Model.CpfCnpj" required>
+    </div>
+
+    <div id="form-check-inscricaoEstadualPessoaFisica" class="form-check form-check-inscricaoEstadualPessoaFisica">
+        <input type="checkbox" class="form-check-input" id="inscricaoEstadualPessoaFisica" data-bs-toggle="tooltip" title="Informe a Incrição Estadual do cliente">
+        <label class="form-check-label mb-2" for="inscricaoEstadualPessoaFisica">
+            Inscrição Estadual para Pessoa Física
+        </label>
+    </div>
+
+    <div>
+        <label for="inscricaoEstadual" class="form-label">Inscrição Estadual</label>
+        <input type="text" class="form-control mb-2" id="inscricaoEstadual" name="IncricaoEstadual" data-bs-toggle="tooltip" title="Inscrição Estadual do Cliente, selecionar Isento caso assim for." value="@Model.IncricaoEstadual">
+    </div>
+
+    <div id="form-check-isento" class="form-check">
+        <input type="checkbox" class="form-check-input" id="isento" name="Isento" data-bs-toggle="tooltip" title="Selecione se for isento de Incrição Estadual" value="1">
+        <label class="form-check-label mb-2" for="isento">
+            Isento
+        </label>
+    </div>
+
+    <div>
+        <label for="genero" class="form-label">Gênero:</label>
+        <select class="form-select mb-2" id="genero" name="Genero" data-bs-toggle="tooltip" title="Selecione o gênero do Cliente." value="@Model.Genero">
+            <option value="0">Selecione uma opção</option>
+            <option value="1">Masculino</option>
+            <option value="2">Feminino</option>
+            <option value="3">Outro</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="dataNascimento" class="form-label">Data de Nascimento:</label>
+        <input type="date" class="form-control mb-2" id="dataNascimento" name="DataNascimento" data-bs-toggle="tooltip" title="Data de nascimento do Cliente." value="@Model.DataNascimento.ToString("yyyy-MM-dd")">
+    </div>
+
+    <div class="w-100 mt-2 mb-4">
+        <h5 class="text-black p-0 m-0">Senha de Acesso</h5>
+        <hr class="text-black-50 p-0 m-0" />
+    </div>
+
+    <div class="mb-2">
+        <label for="senha" class="form-label">Senha:</label>
+        <input type="password" minlength="8" maxlength="15" class="form-control" id="senha" name="Senha" data-bs-toggle="tooltip" title="Cadastre a senha de acesso do seu Cliente." value="@Model.Senha" required>
+    </div>
+
+    <div class="mb-2">
+        <label for="confirmacao" class="form-label">Confirmação da Senha:</label>
+        <input type="password" minlength="8" maxlength="15" class="form-control" id="confirmacao" name="Confirmacao" data-bs-toggle="tooltip" title="Repita a senha do cliente" value="@Model.Senha" required>
+    </div>
+
+    <div class="w-100 mt-2 mb-4">
+        <h5 class="text-black p-0 m-0">Situação do Cliente</h5>
+        <hr class="text-black-50 p-0 m-0" />
+    </div>
+
+    <div class="form-check mb-2">
+        <input type="checkbox" class="form-check-input" id="bloqueado" name="Bloqueado" data-bs-toggle="tooltip" title="selecione se for bloqueado" value="1">
+        <label class="form-check-label" for="bloqueado">
+            Bloqueado
+        </label>
+    </div>
+
+
+    <div class="form-buttons">
+        <button type="reset" class="btn btn-secondary">Limpar</button>
+        <button type="submit" class="btn btn-success">Salvar</button>
+    </div>
+
+</form>
+
+<script src="~/js/usuario.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        selecionarCamposAoIniciar();
+    });
+
+    function selecionarCamposAoIniciar() {
+        $("#tipo").val(@Model.TipoPessoa);
+        $("#genero").val(@Model.Genero);
+
+        EsconderTodos();
+
+        if (@Model.TipoPessoa == 0) {
+            mostrarCamposPessoaJuridica();
+
+            if (`@Model.IncricaoEstadual` == ""){
+                $("#isento").prop('checked', true)
+                $("#inscricaoEstadual").prop('disabled', true);
+                console.log(`@Model.IncricaoEstadual`)
+            }
+        }
+        else {
+            mostrarCamposPessoaFisica();
+
+            if (`@Model.IncricaoEstadual` != "") {
+                mostraCampo("inscricaoEstadual");
+                $("#inscricaoEstadualPessoaFisica").prop('checked', true)
+            }
+        }
+
+        $("#cpfCnpj").val(`@Model.CpfCnpj`);
+
+        if (@Model.Bloqueado == 1) {
+            $("#bloqueado").prop("checked", true);
+        }
+    }
+</script>
+
+
+
+
+
+

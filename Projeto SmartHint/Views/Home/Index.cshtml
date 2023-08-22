@@ -1,0 +1,222 @@
+﻿@model IEnumerable<ClientesModel>
+
+@{
+    ViewData["Title"] = "Home Page";
+    var filtro = ViewBag.Filtro as Filtro;
+}
+
+<link href="~/css/pages/home.css" rel="stylesheet" />
+
+<div class="info">
+    <div class="box-title">
+        <h1> Clientes</h1>
+        <p>
+            Consulte os seus Clientes cadastrados na
+            sua Loja ou realize o cadastro de novos Cliente.
+        </p>
+    </div>
+    <div class="box-button">
+        <a asp-action="CadastrarCliente" asp-controller="Clientes" class="btn btn-success">Adicionar Cliente</a>
+    </div>
+</div>
+
+<form id="form-filtros-selecionados" asp-action="Filtrar" asp-controller="Home" class="selector-filtros">
+    @if (filtro != null)
+    {
+        <input type="hidden" value="@filtro.NomeRazaoSocial" name="NomeRazaoSocial" id="nomeRazaoSocial-span" />
+        <input type="hidden" value="@filtro.Email" name="Email" id="email-span" />
+        <input type="hidden" value="@filtro.Telefone" name="Telefone" id="telefone-span" />
+        <input type="hidden" value="@filtro.DataCadastro" name="DataCadastro" id="dataCadastro-span" />
+        <input type="hidden" value="@filtro.Bloqueado" name="Bloqueado" id="bloqueado-span" />
+
+
+        <div class="selected-filters">
+            @if (!string.IsNullOrEmpty(filtro.NomeRazaoSocial))
+            {
+                <button type="button" class="btn badge rounded-pill text-bg-secondary" onclick="apagaFiltro('nomeRazaoSocial-span')">@filtro.NomeRazaoSocial <em class="bx bxs-x-circle"></em></button>
+            }
+            @if (!string.IsNullOrEmpty(filtro.Email))
+            {
+                <button type="button" class="d-flex align-items-center btn badge rounded-pill text-bg-secondary" onclick="apagaFiltro('email-span')">@filtro.Email <em class="bx bxs-x-circle"></em></button>
+            }
+            @if (!string.IsNullOrEmpty(filtro.Telefone))
+            {
+                <button type="button" class="d-flex align-items-center btn badge rounded-pill text-bg-secondary" onclick="apagaFiltro('telefone-span')">@filtro.Telefone <em class="bx bxs-x-circle"></em></button>
+            }
+            @if (filtro.DataCadastro.ToString("ddMMyy") != "010101")
+            {
+                <button type="button" class="d-flex align-items-center btn badge rounded-pill text-bg-secondary" onclick="apagaFiltro('dataCadastro-span')">@filtro.DataCadastro <em class="bx bxs-x-circle"></em></button>
+            }
+            @if (filtro.Bloqueado != 2)
+            {
+                <button type="button" class="d-flex align-items-center btn badge rounded-pill text-bg-secondary" onclick="apagaFiltro('bloqueado-span')">@(filtro.Bloqueado == 0 ? "Não" : "Sim") <em class="bx bxs-x-circle"></em></button>
+            }
+        </div>
+    }
+
+    <button type="button" onclick="toggleFiltro()" class="btn btn-primary fit-content">Filtrar</button>
+</form>
+
+<form id="form-filtro" asp-action="Filtrar" asp-controller="Home" class="filtro d-none">
+    <div class="box-input">
+        <!-- Nome/Razão Social -->
+        <div class="col-3 p-0">
+            <label for="nomeRazaoSocial" class="form-label">Nome/Razão Social:</label>
+            <input type="text" class="form-control" name="NomeRazaoSocial" placeholder="Nome ou Razão Social do Cliente">
+        </div>
+
+        <!-- E-mail -->
+        <div class="col p-0">
+            <label for="email" class="form-label">E-mail:</label>
+            <input type="text" class="form-control" name="Email" placeholder="E-mail do Cliente">
+        </div>
+
+        <!-- Telefone -->
+        <div class="col p-0">
+            <label for="telefone" class="form-label">Telefone:</label>
+            <input type="tel" class="form-control" name="Telefone" placeholder="Telefone do Cliente">
+        </div>
+
+        <!-- Data de Cadastro -->
+        <div class="col p-0">
+            <label for="dataCadastro" class="form-label">Data de Cadastro:</label>
+            <input type="date" class="form-control" name="DataCadastro" placeholder="Selecione uma data ou período">
+        </div>
+
+        <!-- Cliente bloqueado -->
+        <div class="col p-0">
+            <label for="clienteBloqueado" class="form-label">Cliente bloqueado:</label>
+            <select class="form-select" name="Bloqueado">
+                <option value="2">Selecione uma opção</option>
+                <option value="1">SIM</option>
+                <option value="0">NÃO</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="box-buttons">
+        <button type="reset" class="btn btn-secondary">Limpar Filtros</button>
+        <button type="submit" class="btn btn-success">Aplicar Filtros</button>
+    </div>
+</form>
+
+
+<table class="table table-responsive table-bordered table-striped mt-2">
+    <thead>
+        <tr>
+            <th scope="col">
+                <input class="form-check-input" type="checkbox" id="SelecionarTudo">
+            </th>
+            <th scope="col">Nome ou Razão Social</th>
+            <th scope="col">Email</th>
+            <th scope="col">Telefone</th>
+            <th scope="col">Data Cadastro</th>
+            <th scope="col">Bloqueado</th>
+            <th scope="col">Ações</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>
+                    <input class="form-check-input cb-cliente" type="checkbox" value="@c.Id" id="Cliente-@c.Id">
+                </td>
+                <th>
+                    <span>
+                        @c.NomeRazaoSocial
+                        <span class="badge rounded-pill text-bg-secondary">@(c.TipoPessoa == 1 ? "PF" : "PJ")</span>
+                    </span>
+                </th>
+                <td>@c.Email</td>
+                <td>@c.Telefone</td>
+                <td>@c.DataCadastro</td>
+                <td>
+                    <label class="switch">
+                        <input type="checkbox" onchange="bloquear(@c.Id)" @(c.Bloqueado == 1 ? "checked" : "")>
+                        <span class="slider round"></span>
+                    </label>
+                </td>
+                <td>
+                    <form asp-action="EditarCliente" asp-controller="Clientes" method="post">
+                        <input type="hidden" name="id" value="@c.Id">
+                        <button type="submit" class="btn btn-primary"><em class="bx bx-edit"></em></button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination justify-content-center" id="pagination">
+    </ul>
+</nav>
+
+@Html.Hidden("Bloquear", Url.Action("Bloquear", "Gerenciamento"))
+
+<script src="~/js/pagination.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        eventoSubmitFiltro();
+        eventoClickSelecionarTudo();
+    });
+
+    var selecionados = [];
+
+    function toggleFiltro() {
+        console.log("toggle")
+        $("#form-filtro").toggleClass("d-none");
+    }
+
+    function eventoSubmitFiltro() {
+        $("#Filtro").on("submit", function (event) {
+            toggleFiltro();
+        });
+    }
+
+    function eventoClickSelecionarTudo() {
+        $("#SelecionarTudo").click(function (event) {
+            if ($("#SelecionarTudo").prop('checked')) {
+                selecionados.length = 0;
+
+                console.log("Checked")
+
+                $(".cb-cliente").each(function () {
+                    $(this).prop("checked", true);
+
+                    selecionados.push($(this).attr("id").replace("Cliente-", ""))
+                    console.log("Adicionando - " + $(this).attr("id").replace("Cliente - ", ""))
+                });
+            }
+            else {
+                selecionados.length = 0;
+                console.log("Limpando Tudo")
+                $(".cb-cliente").each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+
+            console.log(selecionados);
+        });
+    }
+
+    function apagaFiltro(id) {
+        if (id == "bloqueado-span")
+            $(`#${id}`).val(2)
+        else
+            $(`#${id}`).remove()
+        console.log(id)
+        $("#form-filtros-selecionados").submit();
+    }
+
+    function bloquear(id){
+        $.ajax({
+            url: $("#Bloquear").val(),
+            data: JSON.stringify(id),
+            contentType: "application/json; charset=utf-8",
+            type: "POST"            
+        });
+    }
+</script>
