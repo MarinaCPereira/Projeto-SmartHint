@@ -1,0 +1,5 @@
+Comando utilizados para a criação do Banco de Dados:
+
+PM> Add-Migration CriarTabelaClientes -Context BancoContext
+
+PM> Update-Database -Context BancoContext
